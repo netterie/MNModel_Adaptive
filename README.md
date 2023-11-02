@@ -1,5 +1,5 @@
-# Minnesota SARS-CoV-2 Model
-
+# Accompanying R code for the forthcoming publication 
+# Sanstead et al., Adaptive COVID-19 Mitigation Strategies: Trade-Offs Between Trigger Thresholds, Response Timing, and Effectiveness, MDM Policy & Practice, 2023.
 ## How to use:
 
 First, go to COVID19pack/inst/make_package.R to install the COVID19 model package on your machine.
