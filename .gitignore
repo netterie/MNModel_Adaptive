@@ -1,3 +1,8 @@
+# Datasets
+m_init_cases.rda
+mixing_matrix.rda
+population.rda
+
 # History files
 .Rhistory
 .Rapp.history
