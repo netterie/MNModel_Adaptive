@@ -104,6 +104,7 @@ covid_19_model_function <- function(t, v_model_state, parms, v_days_since_peak, 
                                n_tests_per_day_hosp * n_hosp_pop - 
                                n_tests_per_day_icu * n_icu_pop))
     
+    # calculate total demand for testing
     n_test_demand <- p_I_seek_test * n_inf_pop + p_nonI_seek_test * n_nonI_pop
     
     # calculate actual proportions tested, applying testing capacity constraint
@@ -119,7 +120,7 @@ covid_19_model_function <- function(t, v_model_state, parms, v_days_since_peak, 
       p_nonI_tested <- p_nonI_seek_test
     }
     actual_frac_SEAR_tested <- p_nonI_tested
-    actual_frac_I_tested <- p_I_tested #+ 0.002
+    actual_frac_I_tested <- p_I_tested 
   }
   
 
