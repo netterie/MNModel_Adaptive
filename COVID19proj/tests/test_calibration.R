@@ -1,18 +1,36 @@
-# This is a script to replicate model calibration
+# ****************************************************************************
+# Reduction of calibABC.R, using tidied file structure and path references
+# ****************************************************************************
 
+# Assumes you are in COVID19_Trigger.Rproj
+# ABC is buggy and may not work with <1000 sims
+
+nsim <- 10
+
+# If this is an initial run that reflects the original results, 
+# save them as a verification dataset. If FALSE, load the verification
+# dataset and compare the results
+initial_run <- TRUE
 
 library(EasyABC)
 library(COVID19pack)
 library(readxl)
 
-source("COVID19proj/setup/set_states_eo.R")
+# Set directories based on root set by "COVID19_Trigger.RProj"
+dir_root  <- getwd()
+dir_proj  <- file.path(dir_root, "COVID19Proj")
+dir_data  <- file.path(dir_proj, "data")
+dir_setup <- file.path(dir_proj, "sim setup")
+
+# Source helper functions
+source(file.path(dir_proj, "sim setup/set_states_eo.R"))
 
 ### ABC process
 sim_output <- function(x, 
                        calibrate = TRUE) {
   
   
-  start_date <- set_start_date()
+  start_date <- COVID19pack:::set_start_date()
   dat_date <- as.Date("2020-08-09")
   end_date <- as.Date("2021-03-22")
   cal_date <- as.Date("2020-12-01")
@@ -69,15 +87,23 @@ sim_output <- function(x,
 # Read in Calibration Targets
 target_ls <- readRDS("COVID19proj/data/Calib_Targets.rds")
 
-parm_bd_df <- COVID19pack:::spec_parm23() # 23rd test of contact matrix reduction parameter blocks - kept these the same for Sequential; a good place to start for other respiratory disease, too
+# Set up data frame of parameters to calibrate, with lower and upper bounds
+parm_bd_df <- COVID19pack:::spec_parm23()
 parm_bd_df[nrow(parm_bd_df)+1,] <- list("off_cr", lb = 0.01, ub = 0.99)
 
-## Set end day
-start_date = set_start_date()
+# Set prior distributions as uniform between the lower and upper bounds
+priors <- lapply(c(1:nrow(parm_bd_df)), function(x) {
+  c("unif", parm_bd_df[x, "lb"], parm_bd_df[x, "ub"])
+})
+
+## Set start and end day
+start_date <- set_start_date() #JKB added - if sourcing, the ::: in sim_output doesn't initialize start_date
 dat_day <- as.numeric(as.Date("2020-08-09") - start_date)
 cal_day <- as.numeric(as.Date("2020-12-01") - start_date)
 
-## generate targets
+## Extract targets at select times
+## --- Days to check targets at: weekly through dat_day,
+## --- Biweekly from dat_day to cal_day
 tix <- seq(7, dat_day, 7)
 tix2 <- seq(dat_day, cal_day, 14)
 targets <- c(target_ls$actual_deaths[tix], 
@@ -86,15 +112,7 @@ targets <- c(target_ls$actual_deaths[tix],
              target_ls$actual_hospitalizations3[tix],
              rep(377, length(tix2)))
 
-
-
-priors <- lapply(c(1:nrow(parm_bd_df)), function(x) {
-  c("unif", parm_bd_df[x, "lb"], parm_bd_df[x, "ub"])
-})
-
-
-nsim <- 10
-
+# Start the clock
 aa <- Sys.time()
 abs_res <- ABC_sequential(method = "Lenormand",
                           model = sim_output,
@@ -112,7 +130,11 @@ print(Sys.time() - aa)
 parm_df <- data.frame(abs_res$param)
 parm_df$weights <- abs_res$weights
 
-# Save posterior parameters
-saveRDS(parm_df, file = "COVID19proj/data/abc_posterior_samples.rds")
+# Save or compare
+if (initial_run) {
+  filename = paste("COVID19proj/tests/abc_posterior_samples_verification", nsim, "sims.rds")
+  saveRDS(parm_df, file = filename)
+}
+
 
 
