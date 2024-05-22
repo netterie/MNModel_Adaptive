@@ -39,10 +39,27 @@ gen_states_index <- function(age_groups = c(0, 10, 20, 30, 40, 50, 60, 70, 80),
                   "H", "ICU", "R","RD","D", "HD", "CH")
   n_epi_groups <- length(epi_groups)
   
+  # JKB NOTE: below and elsewhere, use of individual vectors and lists 
+  # makes it difficult to quickly understand which vectors
+  # have the same dimensions and correspond to the same conceptual value,
+  # whereas a data frame makes that obvious
+  
   ## Names for output objects
+  # JKB NOTE: This approach puts the whole indexing process at the mercy of 
+  # the "outer" command
   nam <- c(outer(outer(comorbidity_groups, epi_groups, FUN = "paste"), age_groups , FUN = "paste"))
   
   ## Create index list
+  # JKB NOTE: I believe this process of getting numeric indices is more complicated
+  # than it needed to be because it had to match what was done by the "outer" command
+  # ls_ix a list of
+  # 1. ie = vector of the numeric indices (1:25) of the epi group for each of the 850 compartments
+  # 2. ic = vector of the numeric indices (0:1) of the comorbidity group for each of the 850 compartments
+  # 3. ia = vector of the numeric indices (0:16) of the age group for each of the 850 compartments
+  # 4. ie_str = vector of the alphanumeric ids of the epi group for each of the 850 compartments (25 unique vals)
+  # 4. index = vector of the numeric indices (1:850) of each compartment, but NOT in numeric order because
+  #    of the formula approach used (see get_ind function below, "index <- eg * ncg + cg + ag * neg * ncg - (ncg - 1)"),
+  #    probably because the 
   ls_ix <- get_ind(ncg = ncg, neg = n_epi_groups, nag = n_age_groups, epi_groups)
   
   epi_groups_ls <- list(v_exp_str = v_exp_str,
@@ -68,11 +85,14 @@ gen_states_index <- function(age_groups = c(0, 10, 20, 30, 40, 50, 60, 70, 80),
 
 #' @export
 create_hash_table <- function(epi_states_index) {
+  
+  # Extract numbers of states, strata, infected and exposed states
   nag <- epi_states_index$n_age_groups
   ncg <- epi_states_index$ncg
   nes <- epi_states_index$n_exposed_states
   nis <- epi_states_index$n_infected_states
   
+  # Numeric indexes for states, strata, and each compartment. Plus ie_str (string ID)
   ie <- epi_states_index$ls_ix$ie
   ic <- epi_states_index$ls_ix$ic
   ia <- epi_states_index$ls_ix$ia
