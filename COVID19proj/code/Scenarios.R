@@ -3,16 +3,25 @@
 rm(list = ls())
 
 # Loading COVID-19 package
+# JKB: To install COVID19pack for the first time, open "COVID19pack/COVI19pack.proj" 
+# in a new session and then run inst/make_package.R. I added that project to 
+# reduce the confusion introduced by working directories
 library(COVID19pack) # make sure you have installed the COVID19pack package
 library(ggplot2)
 library(reshape2)
 
 #### Set working directory (Please ensure your current working directory is under MNCOVID19)
-setwd(paste0(getwd(), "/COVID19proj"))
+# JKB: Never do this; instead, rely on the .RProj to set the directory. I have modified
+# the directory references to assume that the "COVID19_Trigger.RProj" in the parent folder
+# is setting the working directory
+# setwd(paste0(getwd(), "/COVID19proj"))
+dir_proj <- "COVID19proj"
 
-x<-readRDS("data/abc_posterior_samples.rds")
+x<-readRDS(file.path(dir_proj, "data/abc_posterior_samples.rds"))
 
-source("sim setup/set_states_eo.R") # helper function for running the model
+# JKB: the folder "sim setup" was bugging me because it has a space.
+# Renamed to "setup"
+source(file.path(dir_proj, "setup/set_states_eo.R")) # helper function for running the model
 
 start_date <- set_start_date()
 dat_date <- as.Date("2020-08-09")
@@ -37,6 +46,7 @@ NPI_E <- data.frame(A1=c(1:365))
 NPI_F <- data.frame(A1=c(1:365))
 
 
+# JKB Notes:
 # x contains the posterior samples for the estimated parameters
 # Each row of x is one sampled parameter set
 # Each scenario is run using each parameter set
