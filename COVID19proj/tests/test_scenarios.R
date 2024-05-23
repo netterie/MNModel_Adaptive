@@ -5,6 +5,7 @@
 
 # Assumes you are in COVID19_Trigger.Rproj
 # set runmodel=FALSE to do the setup, skip running the model, and return "parms"
+# uncomment the line at the end of this file to run scenarios A and B
 
 test_scenarios = function(nsamp=1, runmodel=FALSE) {
   
@@ -179,3 +180,6 @@ test_scenarios = function(nsamp=1, runmodel=FALSE) {
   } else return(parms)
 
 } #end test_scenarios
+
+
+# test_scenarios(nsamp=1, runmodel=TRUE)
