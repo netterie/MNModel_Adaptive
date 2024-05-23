@@ -4,6 +4,9 @@
 
 First, go to COVID19pack/inst/make_package.R to install the COVID19 model package on your machine.
 
+**JKB Note**: Open a new R session using the COVID19pack.Rproj I added within the CODIV19pack folder, and run make_package.R from there.
+To run the analysis scripts below, exit that RProj, open the COVID19_Trigger.RProj, and work from there.
+
 The following scripts may be of interest:
 
 -   The primary script that is used to run the base case scenarios A-F is Scenarios.R
