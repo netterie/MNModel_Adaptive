@@ -149,6 +149,9 @@ create_hash_table <- function(epi_states_index) {
   
   #### indices for lambda calculation in lambda.R file
   e$v_ind_inf_by_age <- index[ie_str %in% c(v_asym_inf_str, v_inf_str)]
+     # JKB: from above: v_inf_str <- paste0("I", 1:n_infected_states) --> c("I1", "I2", "I3")
+     # JKB: from above: v_asym_inf_str <- paste0("AI", 1:n_infected_states) --> c("AI1", "AI2", "AI3")
+  
   e$v_ind_D_by_age <- index[ie_str == "D"]
   e$v_ind_quar_inf_by_age <- index[ie_str %in% c(v_qai_str, v_qi_str)]
   e$v_ind_quar_noninf_by_age <- index[ie_str %in% c("QS",v_qe_str,"QR")]

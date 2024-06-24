@@ -102,9 +102,13 @@ calculate_lambda <- function(mixing_matrix, init_pop, parms) {
   nag <- parms$n_age_groups
   ncg <- parms$n_co_groups
   
+  # All AI and I state-compartments (see gen_states_index.R)
   v_ind_inf_by_age <- parms$hash_table[["v_ind_inf_by_age"]]
+  # All AI and I state-compartments, quarantine version (see gen_states_index.R)
   v_ind_quar_inf_by_age <- parms$hash_table[["v_ind_quar_inf_by_age"]]
+  # All D state-compartments, quarantine version (see gen_states_index.R)
   v_ind_D_by_age <- parms$hash_table[["v_ind_D_by_age"]]
+  # All S, E and R state-compartments, quarantine version
   v_ind_quar_noninf_by_age <- parms$hash_table[["v_ind_quar_noninf_by_age"]]
   
   # Calculate number of people in each age group who are infected and living

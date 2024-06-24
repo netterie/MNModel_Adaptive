@@ -107,7 +107,7 @@ parms <- test_scenarios(nsamp=1,runmodel=FALSE)
   #print(length(init_vec))
   
 # ----------------------------------------------------------------------------
-# Initialize state-compartments: I (use detected cases only)
+# Total cases by age (detected + undetected)
 # ----------------------------------------------------------------------------
   # First, distribute people across age and comorbidity compartments
   # indexing will be ia = (i-1) and cg=0 or 1

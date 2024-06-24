@@ -73,6 +73,12 @@ out[1, ] <- out_full[1, ] <- c(y, 0 * v_strat_status)
 # This next line gets updated inside the time loop: return the 
 # most recent state of the v_strat_status entries
 v_strat_active_tlast <- out_full[t,  name_v_strat_status]
+#v_strat_active_tlast
+#sd   sip    sc sd60p   bec 
+#0     0     0     0     0 
+
+# Call to function:
+# ls_res <- func(t, model_state, parms, v_days_since_peak, v_strat_active_tlast)
 
 # ----------------------------------------------------------------------------
 #' @title Model Function for MN covid-19 model
@@ -190,6 +196,9 @@ v_strat_active_tlast <- out_full[t,  name_v_strat_status]
   # calculate_lambda creates a vector of length 9, one entry per age group,
   # and then copies each entry using rep(...,each=ncg) 
   lambda <- calculate_lambda(mixing_matrix, v_model_state, parms)
+  
+    # Step inside calculate_lambda: 
+    init_pop=v_model_state
 
   ##initilize vector of differences##
   d <- rep(0, length(parms$init_vec))
@@ -198,6 +207,11 @@ v_strat_active_tlast <- out_full[t,  name_v_strat_status]
   v_S_ind <- hash_table$v_S_ind
   v_QS_ind <- hash_table$v_QS_ind
 
+  # beta: (scalar = 0.02526144) probability that contact with an infectious person will cause an infection
+  # lambda: (by compartment) # of infectious contacts
+  # actual_frac_SEAR_tested: (scalar = 0)
+  # p_quar_exit (scalar = 0.003565059)
+  # p_spec_test (scalar = 0.99)
   d[v_S_ind] <- -beta * lambda *
     (1 - actual_frac_SEAR_tested * (1 - p_spec_test)) * v_model_state[v_S_ind] + # exiting to E1
     p_quar_exit * v_model_state[v_QS_ind] - # incoming
